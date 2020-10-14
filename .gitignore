@@ -129,4 +129,7 @@ dmypy.json
 .pyre/
 
 # The Project
+.vscode/
 trash/
+Pipfile
+Pipfile.lock
