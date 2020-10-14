@@ -6,7 +6,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setuptools.setup(
     name='number_precision',
-    version='2020.10.14',
+    version='2020.10.16',
     author='Czzwww',
     author_email='459749926@qq.com',
     description='Python 精度计算',

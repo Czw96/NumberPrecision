@@ -1,1 +1,1 @@
-from number_precision import NP
+from .number_precision import NP
