@@ -1,30 +1,43 @@
-from decimal import Decimal, Context, ROUND_HALF_UP
-from functools import reduce
+from decimal import Decimal
+import functools
 
 
 class NP:
     @staticmethod
-    def plus(*args, round=None):
-        value = sum(map(lambda num: Decimal(str(num)), args))
-        return NP.round(value, ndigits=round)
+    def plus(*numbers, round: int = None, number_type=float):
+        assert len(numbers) > 0
+
+        numbers = [Decimal(str(number)) for number in numbers]
+        return number_type(NP.round(sum(numbers), ndigits=round))
 
     @staticmethod
-    def minus(*args, round=None):
-        value = sum(map(lambda num: -Decimal(str(num)), args[1:]), Decimal(str(args[0])))
-        return NP.round(value, ndigits=round)
+    def minus(*numbers, round: int = None, number_type=float):
+        assert len(numbers) > 0
+
+        numbers = [-Decimal(str(number)) for number in numbers]
+        numbers[0] = -numbers[0]
+        return number_type(NP.round(sum(numbers), ndigits=round))
 
     @staticmethod
-    def times(*args, round=None):
-        value = reduce(lambda total, num: total * Decimal(str(num)), [Decimal(1), *args])
-        return NP.round(value, ndigits=round)
+    def times(*numbers, round: int = None, number_type=float):
+        assert len(numbers) > 0
+
+        numbers = [Decimal(str(number)) for number in numbers]
+        value = functools.reduce(lambda total, number: total * number, numbers)
+        return number_type(NP.round(value, ndigits=round))
 
     @staticmethod
-    def divide(*args, round=None):
-        value = reduce(lambda total, num: total / Decimal(str(num)), [Decimal(str(args[0])), *args[1:]])
-        return NP.round(value, ndigits=round)
+    def divide(*numbers, round: int = None, number_type=float):
+        assert len(numbers) > 0
+
+        numbers = [Decimal(str(number)) for number in numbers]
+        if Decimal('0') in numbers:
+            return number_type(0)
+
+        value = functools.reduce(lambda total, number: total / number, numbers)
+        return number_type(NP.round(value, ndigits=round))
 
     @staticmethod
-    def round(value, ndigits=None):
-        if ndigits is not None:
-            value = Context(prec=ndigits, rounding=ROUND_HALF_UP).create_decimal(str(value))
-        return float(value) if '.' in str(value) else int(value)
+    def round(value: Decimal, ndigits: int = None):
+        assert ndigits is None or ndigits >= 0
+        return value if ndigits is None else value.quantize(Decimal('0.' + '0' * ndigits))
